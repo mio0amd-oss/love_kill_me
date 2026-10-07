@@ -1,0 +1,11 @@
+فایل‌های تصویری/صوتی فعلی را از repository اصلی به این پوشه/site کپی کن:
+
+Music.mp3
+aktor.mp3
+toto.mp3
+sahel.mp3
+avatar.jpg
+back.jpg (در صورت وجود)
+CNAME
+
+پنل جدید برای موسیقی‌های جدید، فایل‌ها را خودش در music/ مخزن قرار می‌دهد.

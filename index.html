@@ -13,7 +13,8 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0101'/%3E%3Cpath d='M50 8 L62 42 L92 50 L62 58 L50 92 L38 58 L8 50 L38 42 Z' fill='%23c81e1e'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600&family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Cinzel:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600&family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Cinzel:wght@500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600&family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Cinzel:wght@500;600&display=swap" /><style>#loadingScreen{display:none}.fade-section{opacity:1;transform:none}</style></noscript>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -388,10 +389,6 @@
     <div class="loading-symbol">ꕥ</div>
   </div>
 
-  <audio id="morseAudio" src="Music.mp3" preload="auto"></audio>
-  <audio id="aktorAudio" src="aktor.mp3" preload="auto"></audio>
-  <audio id="totoAudio" src="toto.mp3" preload="auto"></audio>
-  <audio id="sahelAudio" src="sahel.mp3" preload="auto"></audio>
 
   <header class="header fade-section">
     <div class="long-line"></div>
@@ -411,12 +408,12 @@
     <div class="morse-container">
 
       <!-- ردیف ۱: دایره سمت راست، متن سمت چپ -->
-      <div class="music-row row-text-left fade-section">
+      <div class="music-row row-text-left fade-section" data-id="m-music">
         <div class="side-caption">
           <div class="fa-nastaliq">گاهی جنگ برای ماندن محترم‌تر از صلح است برای رفتن</div>
           <div class="en-text">Sometimes a war fought to stay is more honorable than a peace made to leave.</div>
         </div>
-        <div class="circular-morse" id="morseButton" role="button" tabindex="0" aria-label="پخش موسیقی اول">
+        <div class="circular-morse" id="morseButton" data-src="Music.mp3" role="button" tabindex="0" aria-label="پخش موسیقی اول">
           <svg class="morse-text-svg" viewBox="0 0 240 240">
             <defs>
               <path id="circlePath1" d="M 120, 120 m -105, 0 a 105,105 0 1,1 210,0 a 105,105 0 1,1 -210,0" fill="none" />
@@ -434,12 +431,12 @@
       </div>
 
       <!-- ردیف ۲: دایره سمت چپ، متن سمت راست -->
-      <div class="music-row row-text-right fade-section">
+      <div class="music-row row-text-right fade-section" data-id="m-aktor">
         <div class="side-caption">
           <div class="fa-nastaliq">به قول ون‌گوگ، غم همیشه باقیه</div>
           <div class="en-text">As Van Gogh said, the sadness always remains.</div>
         </div>
-        <div class="circular-morse" id="aktorButton" role="button" tabindex="0" aria-label="پخش موسیقی دوم">
+        <div class="circular-morse" id="aktorButton" data-src="aktor.mp3" role="button" tabindex="0" aria-label="پخش موسیقی دوم">
           <svg class="morse-text-svg" viewBox="0 0 240 240">
             <defs>
               <path id="circlePath2" d="M 120, 120 m -105, 0 a 105,105 0 1,1 210,0 a 105,105 0 1,1 -210,0" fill="none" />
@@ -457,12 +454,12 @@
       </div>
 
       <!-- ردیف ۳: دایره سمت راست، متن سمت چپ -->
-      <div class="music-row row-text-left fade-section">
+      <div class="music-row row-text-left fade-section" data-id="m-toto">
         <div class="side-caption">
           <div class="fa-nastaliq">تو خودت خواستی !</div>
           <div class="en-text">You wanted it yourself!</div>
         </div>
-        <div class="circular-morse" id="totoButton" role="button" tabindex="0" aria-label="پخش موسیقی سوم">
+        <div class="circular-morse" id="totoButton" data-src="toto.mp3" role="button" tabindex="0" aria-label="پخش موسیقی سوم">
           <svg class="morse-text-svg" viewBox="0 0 240 240">
             <defs>
               <path id="circlePath3" d="M 120, 120 m -105, 0 a 105,105 0 1,1 210,0 a 105,105 0 1,1 -210,0" fill="none" />
@@ -480,12 +477,12 @@
       </div>
 
       <!-- ردیف ۴: دایره سمت چپ، متن سمت راست -->
-      <div class="music-row row-text-right fade-section">
+      <div class="music-row row-text-right fade-section" data-id="m-sahel">
         <div class="side-caption">
           <div class="fa-nastaliq">اگر نهنگ بودم امشب می‌رفتم ساحل!</div>
           <div class="en-text">If I were a whale, tonight I'd go to the shore!</div>
         </div>
-        <div class="circular-morse" id="sahelButton" role="button" tabindex="0" aria-label="پخش موسیقی چهارم">
+        <div class="circular-morse" id="sahelButton" data-src="sahel.mp3" role="button" tabindex="0" aria-label="پخش موسیقی چهارم">
           <svg class="morse-text-svg" viewBox="0 0 240 240">
             <defs>
               <path id="circlePath4" d="M 120, 120 m -105, 0 a 105,105 0 1,1 210,0 a 105,105 0 1,1 -210,0" fill="none" />
@@ -503,7 +500,7 @@
       </div>
 
       <!-- ردیف ۵: بدون دایره، فقط متن و یک خط -->
-      <div class="music-row row-text-right fade-section" style="flex-direction: column; justify-content: center;">
+      <div class="music-row row-text-right fade-section" data-id="t-1" style="flex-direction: column; justify-content: center;">
         <div class="side-caption" style="max-width: 420px;">
           <div class="fa-nastaliq">گاها فکر می‌کردم مرگ می‌تواند مصیبت باشد، ناراحتی و غم به همراه دارد، دل آدم خون می‌شود و می‌تواند سال‌ها باهات بماند، اما زندگی بدون مرگ هزاران بار خسته‌کننده‌تر و ناراحت‌کننده‌تر است. «مگر اینکه حقه باشد، من می‌خواهم تنها بمیرم.» حتی تتلو هم اشتباه می‌کرد، من نمی‌خواهم با تو بمیرم. می‌گذرد تا تنهایی را درک کنی، توی دنیایی پر از اشتباه. مرگ مصیبت نیست، شاید تنها و تنها نعمت واقعی مرگ باشد.</div>
         </div>
@@ -511,7 +508,7 @@
       </div>
 
       <!-- ردیف ۶: متن جدید، یک خط زیرش -->
-      <div class="music-row row-text-right fade-section" style="flex-direction: column; justify-content: center;">
+      <div class="music-row row-text-right fade-section" data-id="t-2" style="flex-direction: column; justify-content: center;">
         <div class="side-caption" style="max-width: 420px;">
           <div class="fa-nastaliq">نمی‌دانم، شاید در دنیایی دیگر، شایدم هیچ‌وقت،<br>شاید، تمامی آن‌ها با شاید گره خورده‌اند،<br>حتی شایدهایی که نمی‌خواهم باورشان کنم،<br>همچنان (شوق دیداری که دارد دل من) نه من دانم و نه دل داند و نه تو</div>
         </div>
@@ -529,35 +526,31 @@
   <div class="playing-indicator" id="playingIndicator">در حال پخش...</div>
 
   <script>
-    // ---- صفحه لودینگ اولیه ----
-    window.addEventListener('load', () => {
-      const loadingScreen = document.getElementById('loadingScreen');
-      setTimeout(() => {
-        loadingScreen.classList.add('hidden');
-      }, 900);
-    });
+    // ---- صفحه لودینگ اولیه (سریع) ----
+    (function () {
+      const ls = document.getElementById('loadingScreen');
+      let done = false;
+      function hide() { if (done) return; done = true; if (ls) ls.classList.add('hidden'); }
+      function start() { setTimeout(hide, 250); }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+      setTimeout(hide, 1500); // سقف انتظار
+    })();
 
     // ---- تشخیص back.jpg برای پس‌زمینه سفارشی ----
     (function () {
       const bgImg = new Image();
-      bgImg.onload = function () {
-        document.body.classList.add('custom-bg');
-      };
-      bgImg.onerror = function () {
-        // back.jpg موجود نیست، همون حالت پیش‌فرض قرمز-مشکی باقی می‌مونه
-      };
+      bgImg.onload = function () { document.body.classList.add('custom-bg'); };
+      bgImg.onerror = function () { /* back.jpg موجود نیست: حالت پیش‌فرض */ };
       bgImg.src = 'back.jpg';
     })();
 
     // ---- فید-این بخش‌ها هنگام اسکرول ----
     (function () {
       const sections = document.querySelectorAll('.fade-section');
+      if (!('IntersectionObserver' in window)) { sections.forEach((el) => el.classList.add('visible')); return; }
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
-          }
+          if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
         });
       }, { threshold: 0.15 });
       sections.forEach((el) => observer.observe(el));
@@ -568,9 +561,7 @@
       let audioCtx = null;
       function playHoverTick() {
         try {
-          if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-          }
+          if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
           osc.type = 'sine';
@@ -582,66 +573,73 @@
           gain.connect(audioCtx.destination);
           osc.start();
           osc.stop(audioCtx.currentTime + 0.2);
-        } catch (e) {
-          // مرورگر از Web Audio پشتیبانی نمی‌کند
-        }
+        } catch (e) { /* Web Audio پشتیبانی نمی‌شود */ }
       }
-      document.querySelectorAll('.circular-morse').forEach((el) => {
-        el.addEventListener('mouseenter', playHoverTick);
-      });
+      document.querySelectorAll('.circular-morse').forEach((el) => el.addEventListener('mouseenter', playHoverTick));
     })();
 
-    // ---- پخش‌کننده‌های موسیقی ----
-    const playingIndicator = document.getElementById('playingIndicator');
+    // ---- پخش‌کننده‌های موسیقی (فایل صوتی فقط هنگام کلیک بارگذاری می‌شود) ----
+    // هر دایره: data-src="مسیر.mp3"  (سازگار با الگوی قدیمی: id=xButton + <audio id="xAudio">)
+    (function () {
+      const indicator = document.getElementById('playingIndicator');
 
-    const players = [
-      { button: document.getElementById('morseButton'), audio: document.getElementById('morseAudio') },
-      { button: document.getElementById('aktorButton'), audio: document.getElementById('aktorAudio') },
-      { button: document.getElementById('totoButton'), audio: document.getElementById('totoAudio') },
-      { button: document.getElementById('sahelButton'), audio: document.getElementById('sahelAudio') }
-    ];
-
-    function stopAll(except) {
-      players.forEach((p) => {
-        if (p.audio !== except) {
-          p.audio.pause();
-          p.audio.currentTime = 0;
-          p.button.classList.remove('now-playing');
+      function audioFor(button) {
+        if (button._audio) return button._audio;
+        let a = null;
+        const src = button.getAttribute('data-src');
+        if (src) {
+          a = new Audio();
+          a.preload = 'none';
+          a.src = src;
+        } else if (button.id) {
+          a = document.getElementById(button.id.replace(/Button$/, 'Audio'));
         }
-      });
-    }
+        if (!a) return null;
+        a.addEventListener('ended', () => { button.classList.remove('now-playing'); indicator.classList.remove('active'); });
+        a.addEventListener('error', () => { button.classList.remove('now-playing'); indicator.classList.remove('active'); });
+        button._audio = a;
+        return a;
+      }
 
-    players.forEach((p) => {
-      p.button.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (p.audio.paused) {
-          stopAll(p.audio);
-          p.audio.play()
-            .then(() => {
-              playingIndicator.classList.add('active');
-              p.button.classList.add('now-playing');
-            })
-            .catch(() => console.log('خطا در پخش صدا'));
+      function stopAll(except) {
+        document.querySelectorAll('.circular-morse').forEach((b) => {
+          const a = b._audio;
+          if (a && a !== except) { a.pause(); a.currentTime = 0; b.classList.remove('now-playing'); }
+        });
+        // الگوی قدیمی: <audio> های بدون data-src
+        document.querySelectorAll('audio').forEach((a) => { if (a !== except && !a.paused) { a.pause(); a.currentTime = 0; } });
+      }
+
+      function toggle(button) {
+        const a = audioFor(button);
+        if (!a) return;
+        if (a.paused) {
+          stopAll(a);
+          a.play()
+            .then(() => { indicator.classList.add('active'); button.classList.add('now-playing'); })
+            .catch(() => { button.classList.remove('now-playing'); indicator.classList.remove('active'); });
         } else {
-          p.audio.pause();
-          p.audio.currentTime = 0;
-          playingIndicator.classList.remove('active');
-          p.button.classList.remove('now-playing');
+          a.pause();
+          a.currentTime = 0;
+          indicator.classList.remove('active');
+          button.classList.remove('now-playing');
         }
-      });
+      }
 
-      p.button.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          p.button.click();
-        }
+      document.addEventListener('click', (e) => {
+        const b = e.target.closest && e.target.closest('.circular-morse');
+        if (!b) return;
+        e.preventDefault();
+        toggle(b);
       });
-
-      p.audio.addEventListener('ended', () => {
-        playingIndicator.classList.remove('active');
-        p.button.classList.remove('now-playing');
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        const b = e.target.closest && e.target.closest('.circular-morse');
+        if (!b) return;
+        e.preventDefault();
+        toggle(b);
       });
-    });
+    })();
   </script>
 </body>
 </html>

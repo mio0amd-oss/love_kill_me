@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0a0101">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src https://api.github.com; base-uri 'none'; form-action 'none'">
+<title>پنل مدیریت subkazani</title>
+<style>
+:root{--bg:#050202;--panel:#140606;--panel2:#1c0a0a;--line:#4b1c1c;--line2:#6e2a2a;--red:#8b0000;--red2:#c81e1e;--txt:#f2e4e4;--mut:#b99a9a;--ok:#8ff0a4;--err:#ff9a9a;--warn:#ffd27a}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:Vazirmatn,"Segoe UI",Tahoma,system-ui,sans-serif;background:var(--bg);background-image:radial-gradient(circle at 20% 0,rgba(139,0,0,.28),transparent 55%),linear-gradient(165deg,#000,#1c0505 60%,#2b0505);background-attachment:fixed;color:var(--txt);min-height:100vh;line-height:1.7;padding-bottom:90px}
+button,input,textarea,select{font:inherit;color:inherit}
+.hidden{display:none!important}
+.wrap{max-width:900px;margin:0 auto;padding:16px}
+/* login */
+.login{min-height:100vh;display:grid;place-items:center;padding:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 14px 40px rgba(0,0,0,.55)}
+.login .card{width:min(460px,100%);padding:24px}
+.login h1{font-size:1.25rem;margin-bottom:6px}
+.sub{color:var(--mut);font-size:.88rem}
+label{display:block;margin:12px 0 4px;font-size:.9rem;color:#e8cfcf}
+input[type=text],input[type=password],input[type=number],textarea,select{width:100%;background:#090303;border:1px solid var(--line2);border-radius:10px;padding:11px 12px;min-height:44px;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--red2);box-shadow:0 0 0 2px rgba(200,30,30,.25)}
+textarea{min-height:96px;resize:vertical}
+.ltr{direction:ltr;text-align:left}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.82rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:9px 16px;border-radius:10px;border:1px solid var(--line2);background:var(--panel2);cursor:pointer;text-decoration:none;color:var(--txt);transition:.15s}
+.btn:hover{border-color:var(--red2)}
+.btn.pri{background:linear-gradient(180deg,#a11414,#6e0f0f);border-color:#a11414}
+.btn.dng{background:#3a0b0b;border-color:#7a2020}
+.btn.sm{min-height:38px;padding:5px 11px;font-size:.88rem}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.full{width:100%;margin-top:16px}
+.err{color:var(--err);margin-top:12px;font-size:.9rem;white-space:pre-wrap}
+details{margin-top:14px;font-size:.88rem;color:var(--mut)}
+details summary{cursor:pointer;color:#e8cfcf}
+details ol{padding-inline-start:20px;margin-top:8px}
+details code{direction:ltr;unicode-bidi:embed;background:#090303;padding:1px 6px;border-radius:6px;color:#ffd9d9}
+.chk{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:.9rem;color:var(--mut)}
+.chk input{width:20px;height:20px;accent-color:#a11414}
+/* top */
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:6px 0 12px}
+.top h1{font-size:1.15rem}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.pub{font-size:.82rem;padding:5px 12px;border-radius:99px;background:#1a0a0a;border:1px solid var(--line);color:var(--mut)}
+.pub.ok{color:var(--ok);border-color:#2c6a3a}.pub.wait{color:var(--warn);border-color:#6b5420}.pub.bad{color:var(--err);border-color:#7a2020}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0 10px}
+.tab{flex:0 0 auto;min-height:42px;padding:7px 16px;border-radius:99px;border:1px solid var(--line);background:var(--panel);color:var(--mut);cursor:pointer}
+.tab.on{background:linear-gradient(180deg,#a11414,#6e0f0f);color:#fff;border-color:#a11414}
+/* rows */
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.bar .btn{flex:1 1 150px}
+.item{display:grid;grid-template-columns:auto 1fr;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
+.ico{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:1.15rem;background:radial-gradient(circle at 33% 28%,#6e0f0f,#0a0101 78%);box-shadow:0 0 14px rgba(139,0,0,.5)}
+.item .fa{font-size:1rem;font-weight:600;white-space:pre-wrap;word-break:break-word}
+.item .en{font-size:.85rem;color:var(--mut);direction:ltr;text-align:left;white-space:pre-wrap;word-break:break-word}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.chip{font-size:.75rem;padding:2px 10px;border-radius:99px;background:#2a0f0f;color:#e8cfcf;direction:ltr}
+.ctl{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.ctl audio{width:100%;height:38px;margin-top:4px}
+.empty{color:var(--mut);text-align:center;padding:28px 8px}
+/* settings */
+.sec{margin-bottom:14px}
+.sec h2{font-size:1rem;margin-bottom:2px}
+.imgrow{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.imgrow img{width:84px;height:84px;border-radius:50%;object-fit:cover;border:2px solid var(--line2);background:#000}
+.imgrow .bg{width:140px;height:84px;border-radius:10px}
+/* dialog */
+dialog{border:1px solid var(--line2);border-radius:16px;background:var(--panel);color:var(--txt);padding:0;width:min(560px,94vw);max-height:92vh;margin:auto;overflow:auto}
+dialog::backdrop{background:rgba(0,0,0,.75)}
+.dlg{padding:18px}
+.dlg h3{font-size:1.05rem;margin-bottom:4px}
+.seg{display:flex;gap:8px}
+.seg label{flex:1;margin:0;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border:1px solid var(--line2);border-radius:10px;cursor:pointer;background:#090303}
+.seg input{accent-color:#a11414}
+.seg label:has(input:checked){border-color:var(--red2);background:#2a0c0c}
+.dfoot{display:flex;gap:8px;margin-top:18px}
+.dfoot .btn{flex:1}
+/* busy + toast */
+#busy{position:fixed;inset:0;background:rgba(0,0,0,.72);display:grid;place-items:center;z-index:50;padding:20px}
+#busy div{background:var(--panel);border:1px solid var(--line2);border-radius:14px;padding:20px 26px;text-align:center}
+.spin{width:34px;height:34px;border-radius:50%;border:3px solid #4b1c1c;border-top-color:var(--red2);margin:0 auto 10px;animation:sp 0.9s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+#toasts{position:fixed;left:0;right:0;bottom:14px;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:60;padding:0 12px;pointer-events:none}
+.toast{pointer-events:auto;max-width:560px;width:100%;padding:12px 16px;border-radius:12px;background:#1a0a0a;border:1px solid var(--line2);box-shadow:0 10px 30px rgba(0,0,0,.6);white-space:pre-wrap}
+.toast.ok{border-color:#2c6a3a;color:var(--ok)}.toast.err{border-color:#7a2020;color:var(--err)}
+.hist{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.hist .m{flex:1 1 220px;min-width:0;word-break:break-word}
+.hist .d{color:var(--mut);font-size:.78rem;direction:ltr;text-align:right}
+.warn{background:#2a1c08;border:1px solid #6b5420;color:var(--warn);border-radius:12px;padding:10px 14px;font-size:.86rem;margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<!-- ورود -->
+<div id="login" class="login hidden">
+  <form class="card" id="loginForm" autocomplete="off">
+    <h1>پنل مدیریت subkazani</h1>
+    <div class="sub">ورود فقط با توکن GitHub — همین توکن هم رمز است و هم دسترسی.</div>
+    <label for="tok">GitHub Token</label>
+    <input id="tok" class="ltr mono" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_… یا ghp_…">
+    <label class="chk"><input type="checkbox" id="remember"> مرا در این دستگاه نگه دار</label>
+    <button class="btn pri full" id="loginBtn" type="submit">ورود</button>
+    <div class="err" id="loginErr"></div>
+    <details>
+      <summary>توکن را چطور بسازم؟</summary>
+      <ol>
+        <li>در GitHub: <code>Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token</code></li>
+        <li><code>Repository access</code> ← فقط <code>Only select repositories</code> و مخزن <code>love_kill_me</code></li>
+        <li><code>Permissions → Repository permissions → Contents: Read and write</code></li>
+        <li>(اختیاری) <code>Pages: Read-only</code> برای نمایش وضعیت انتشار</li>
+        <li>توکن را کپی کن و همین‌جا بچسبان. توکن فقط به <code>api.github.com</code> فرستاده می‌شود و روی هیچ سروری ذخیره نمی‌شود.</li>
+      </ol>
+    </details>
+  </form>
+</div>
+
+<!-- برنامه -->
+<div id="app" class="wrap hidden">
+  <div class="top">
+    <div>
+      <h1>پنل مدیریت subkazani</h1>
+      <div class="sub" id="who"></div>
+    </div>
+    <div class="actions">
+      <span class="pub" id="pub" hidden></span>
+      <button class="btn sm" id="reload" type="button">⟳ تازه‌سازی</button>
+      <a class="btn sm" href="https://subkazani.ir" target="_blank" rel="noopener">مشاهده سایت</a>
+      <button class="btn sm dng" id="logout" type="button">خروج</button>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-tab="rows" type="button">محتوای صفحه</button>
+    <button class="tab" data-tab="settings" type="button">تنظیمات سایت</button>
+    <button class="tab" data-tab="history" type="button">تاریخچه</button>
+    <button class="tab" data-tab="files" type="button">فایل‌ها</button>
+    <button class="tab" data-tab="adv" type="button">پیشرفته (HTML)</button>
+  </div>
+
+  <section id="tab-rows">
+    <div class="bar">
+      <button class="btn pri" id="addMusic" type="button">+ موسیقی جدید</button>
+      <button class="btn" id="addText" type="button">+ متن جدید</button>
+    </div>
+    <div id="rows"></div>
+  </section>
+
+  <section id="tab-settings" class="hidden">
+    <div class="card sec">
+      <h2>متن بالای سایت (کادر شعار)</h2>
+      <div class="sub">همان کادری که زیر عکس پروفایل دیده می‌شود.</div>
+      <label for="qFa">فارسی</label><textarea id="qFa" style="min-height:70px"></textarea>
+      <label for="qEn">انگلیسی</label><input id="qEn" type="text" class="ltr">
+    </div>
+    <div class="card sec">
+      <h2>فوتر</h2>
+      <label for="foot">متن فوتر</label><input id="foot" type="text" class="ltr">
+    </div>
+    <div class="card sec">
+      <h2>متن چرخان دور دایره‌ها</h2>
+      <div class="sub">هر خط یک عبارت (انگلیسی). برای همهٔ دایره‌ها اعمال می‌شود.</div>
+      <label for="circ">عبارت‌ها</label><textarea id="circ" class="ltr" style="min-height:80px"></textarea>
+    </div>
+    <div class="card sec">
+      <h2>عنوان و توضیح سایت</h2>
+      <label for="mTitle">عنوان تب مرورگر</label><input id="mTitle" type="text" class="ltr">
+      <label for="mDesc">توضیح (برای اشتراک‌گذاری و گوگل)</label><input id="mDesc" type="text" class="ltr">
+    </div>
+    <button class="btn pri full" id="saveSettings" type="button">ذخیره تنظیمات</button>
+
+    <div class="card sec" style="margin-top:18px">
+      <h2>عکس پروفایل</h2>
+      <div class="imgrow"><img id="avatarImg" alt="avatar" src="../avatar.jpg">
+        <div><button class="btn" id="avatarBtn" type="button">انتخاب عکس جدید</button>
+        <div class="sub" style="margin-top:6px">خودکار به JPEG و اندازهٔ مناسب تبدیل می‌شود.</div></div>
+      </div>
+      <input type="file" id="avatarFile" accept="image/*" class="hidden">
+    </div>
+    <div class="card sec">
+      <h2>پس‌زمینهٔ سفارشی (back.jpg)</h2>
+      <div class="sub" id="bgState">در حال بررسی…</div>
+      <div class="imgrow"><img id="bgImg" class="bg hidden" alt="background">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" id="bgBtn" type="button">آپلود پس‌زمینه</button>
+          <button class="btn dng hidden" id="bgDel" type="button">حذف پس‌زمینه</button>
+        </div>
+      </div>
+      <input type="file" id="bgFile" accept="image/*" class="hidden">
+    </div>
+  </section>
+
+  <section id="tab-history" class="hidden">
+    <div class="sub" style="margin-bottom:10px">آخرین تغییرات فایل <b class="ltr">index.html</b>. هر نسخه را می‌توان برگرداند (بازگردانی خودش یک تغییر جدید ثبت می‌کند).</div>
+    <div id="hist"></div>
+  </section>
+
+  <section id="tab-files" class="hidden">
+    <div class="sub" style="margin-bottom:10px">فایل‌های صوتی و تصویری مخزن. فایل‌های «بدون استفاده» را می‌توان با خیال راحت حذف کرد.</div>
+    <div id="files"></div>
+  </section>
+
+  <section id="tab-adv" class="hidden">
+    <div class="warn">⚠ ویرایش مستقیم کد کل صفحه. قبل از ذخیره دقت کن؛ اگر اشتباه شد از تب «تاریخچه» برگردان.</div>
+    <textarea id="src" class="ltr mono" style="min-height:420px;white-space:pre;overflow:auto" spellcheck="false"></textarea>
+    <div class="bar" style="margin-top:10px">
+      <button class="btn" id="srcReload" type="button">بارگذاری مجدد</button>
+      <button class="btn pri" id="srcSave" type="button">ذخیره کد</button>
+    </div>
+  </section>
+</div>
+
+<!-- دیالوگ ویرایش -->
+<dialog id="dlg">
+  <form class="dlg" id="dlgForm" method="dialog">
+    <h3 id="dTitle"></h3>
+    <label for="dFa">متن فارسی</label>
+    <textarea id="dFa" required></textarea>
+    <label for="dEn">ترجمه / متن انگلیسی <span class="sub" id="dEnOpt"></span></label>
+    <textarea id="dEn" class="ltr" style="min-height:70px"></textarea>
+
+    <div id="dMusic">
+      <label>جای دایره در صفحه</label>
+      <div class="seg">
+        <label><input type="radio" name="dCircle" value="left"> دایره سمت چپ</label>
+        <label><input type="radio" name="dCircle" value="right"> دایره سمت راست</label>
+      </div>
+      <label for="dFile" id="dFileLbl">فایل صوتی (MP3)</label>
+      <input type="file" id="dFile" accept=".mp3,.m4a,.ogg,.wav,audio/*">
+      <audio id="dPrev" controls preload="none" class="hidden" style="width:100%;margin-top:8px"></audio>
+      <div id="dWhereBox">
+        <label for="dWhere">جای قرارگیری</label>
+        <select id="dWhere">
+          <option value="afterMusic">بعد از آخرین موسیقی</option>
+          <option value="start">ابتدای صفحه</option>
+          <option value="end">انتهای صفحه</option>
+        </select>
+      </div>
+      <label class="chk" id="dDelOldBox"><input type="checkbox" id="dDelOld" checked> فایل صوتی قبلی از مخزن حذف شود</label>
+    </div>
+
+    <div id="dText">
+      <label class="chk"><input type="checkbox" id="dLine" checked> خط جداکننده زیر متن</label>
+    </div>
+
+    <div class="err" id="dErr"></div>
+    <div class="dfoot">
+      <button class="btn" id="dCancel" type="button">انصراف</button>
+      <button class="btn pri" id="dSave" type="submit">ذخیره</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="busy" class="hidden"><div><div class="spin"></div><span id="busyMsg">لطفاً صبر کن…</span></div></div>
+<div id="toasts"></div>
+
+<script>
+'use strict';
+/* ====================================================================
+   پنل مدیریت subkazani — کاملاً سمت مرورگر؛ فقط با توکن GitHub
+   ==================================================================== */
+const CFG = { owner: 'mio0amd-oss', repo: 'love_kill_me', api: 'https://api.github.com', maxAudio: 45 * 1024 * 1024 };
+const S = { token: null, branch: 'main', login: '', html: '', rows: [], busy: 0, tab: 'rows', pubTimer: null };
+const DEFAULT_CIRCLE = '&nbsp;•&nbsp; MAYBE IN THE NEXT LIFE &nbsp;•&nbsp; MAYBE NEVER SEE YOU &nbsp;•&nbsp; MAYBE IN THE NEXT LIFE &nbsp;•&nbsp; MAYBE NEVER SEE YOU &nbsp;•&nbsp; MAYBE IN THE NEXT LIFE &nbsp;•&nbsp; MAYBE NEVER SEE YOU &nbsp;•&nbsp;';
+
+const $ = (s, r) => (r || document).querySelector(s);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+function h(tag, props, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(props || {})) {
+    if (v === false || v == null) continue;
+    if (k === 'class') e.className = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v === true ? '' : v);
+  }
+  kids.flat().forEach((c) => { if (c == null || c === false) return; e.append(c.nodeType ? c : document.createTextNode(String(c))); });
+  return e;
+}
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+const toHtml = (t) => esc(String(t).replace(/\r\n?/g, '\n').trim()).replace(/\n/g, '<br>');
+const short = (t, n = 40) => { t = String(t || '').replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n) + '…' : t; };
+const baseName = (p) => String(p || '').split('/').pop();
+const fmtSize = (n) => n > 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB';
+const newId = (p) => p + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+/* ---------- UI helpers ---------- */
+function toast(msg, kind, ms) {
+  const t = h('div', { class: 'toast ' + (kind || '') }, msg);
+  $('#toasts').append(t);
+  setTimeout(() => t.remove(), ms || 3500);
+}
+function showBusy(msg) { $('#busyMsg').textContent = msg || 'لطفاً صبر کن…'; $('#busy').classList.remove('hidden'); }
+function hideBusy() { $('#busy').classList.add('hidden'); }
+function setPub(text, cls) {
+  const el = $('#pub');
+  if (!text) { el.hidden = true; return; }
+  el.hidden = false; el.textContent = text; el.className = 'pub ' + (cls || '');
+}
+
+/* ---------- GitHub API ---------- */
+class GhError extends Error { constructor(status, message, raw) { super(message); this.status = status; this.raw = raw; } }
+function faMsg(status, msg, raw) {
+  const m = String(msg || '');
+  if (status === 401) return 'توکن نامعتبر است یا منقضی شده.';
+  if (status === 403 && /rate limit/i.test(m)) return 'محدودیت تعداد درخواست GitHub؛ چند دقیقه بعد دوباره امتحان کن.';
+  if (status === 403) return 'دسترسی کافی نیست. توکن باید روی مخزن love_kill_me اجازهٔ «Contents: Read and write» داشته باشد.';
+  if (status === 404) return 'پیدا نشد (مخزن، فایل، یا توکن به این مخزن دسترسی ندارد).';
+  if (status === 409) return 'تعارض در ذخیره (فایل همزمان تغییر کرد).';
+  if (status === 413) return 'فایل برای GitHub بیش از حد بزرگ است.';
+  if (status === 422) return 'GitHub درخواست را نپذیرفت: ' + m;
+  if (status >= 500) return 'خطای سرور GitHub؛ کمی بعد دوباره امتحان کن.';
+  return 'خطای GitHub (' + status + '): ' + m;
+}
+async function gh(method, path, body, tokenOverride) {
+  const sep = path.includes('?') ? '&' : '?';
+  const url = CFG.api + path + (method === 'GET' ? sep + '_=' + Date.now() : '');
+  let res;
+  try {
+    res = await fetch(url, {
+      method, cache: 'no-store',
+      headers: Object.assign({ Accept: 'application/vnd.github+json', Authorization: 'Bearer ' + (tokenOverride || S.token) }, body ? { 'Content-Type': 'application/json' } : {}),
+      body: body ? JSON.stringify(body) : undefined
+    });
+  } catch (e) { throw new GhError(0, 'ارتباط با GitHub برقرار نشد. اینترنت/فیلترشکن را بررسی کن.'); }
+  const txt = await res.text(); let data = null;
+  try { data = txt ? JSON.parse(txt) : null; } catch (e) { /* ignore */ }
+  if (!res.ok) throw new GhError(res.status, faMsg(res.status, data && data.message, data), data);
+  return data;
+}
+const repoBase = () => '/repos/' + encodeURIComponent(CFG.owner) + '/' + encodeURIComponent(CFG.repo);
+const encPath = (p) => p.split('/').map(encodeURIComponent).join('/');
+
+function b64ToText(b64) {
+  const bin = atob(b64.replace(/\s/g, ''));
+  const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
+  return new TextDecoder('utf-8').decode(bytes);
+}
+function textToB64(t) {
+  const bytes = new TextEncoder().encode(t); let bin = ''; const CH = 0x8000;
+  for (let i = 0; i < bytes.length; i += CH) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
+  return btoa(bin);
+}
+function blobToB64(blob) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(String(r.result).split(',')[1] || '');
+    r.onerror = () => rej(new Error('خواندن فایل ناموفق بود.'));
+    r.readAsDataURL(blob);
+  });
+}
+async function getFile(path, ref) {
+  const r = await gh('GET', repoBase() + '/contents/' + encPath(path) + '?ref=' + encodeURIComponent(ref || S.branch));
+  if (Array.isArray(r)) throw new Error(path + ' یک پوشه است.');
+  let b64 = r.content;
+  if (r.encoding !== 'base64' || !b64) { const b = await gh('GET', repoBase() + '/git/blobs/' + r.sha); b64 = b.content; }
+  return { sha: r.sha, b64: b64.replace(/\s/g, ''), size: r.size };
+}
+async function fileSha(path) {
+  try { const r = await gh('GET', repoBase() + '/contents/' + encPath(path) + '?ref=' + encodeURIComponent(S.branch)); return Array.isArray(r) ? null : r.sha; }
+  catch (e) { if (e.status === 404) return null; throw e; }
+}
+function putFile(path, b64, message, sha) {
+  const body = { message, content: b64, branch: S.branch };
+  if (sha) body.sha = sha;
+  return gh('PUT', repoBase() + '/contents/' + encPath(path), body);
+}
+function delFile(path, sha, message) { return gh('DELETE', repoBase() + '/contents/' + encPath(path), { message, sha, branch: S.branch }); }
+async function listDir(path) {
+  try { const r = await gh('GET', repoBase() + '/contents' + (path ? '/' + encPath(path) : '') + '?ref=' + encodeURIComponent(S.branch)); return Array.isArray(r) ? r : []; }
+  catch (e) { if (e.status === 404) return []; throw e; }
+}
+
+/* خواندن‌-تغییر-نوشتن روی index.html با تلاش مجدد هنگام تعارض (مثلاً هم‌زمان با ربات همگام‌سازی) */
+async function mutateIndex(mutator, message) {
+  let last;
+  for (let i = 0; i < 4; i++) {
+    const f = await getFile('index.html');
+    const text = b64ToText(f.b64);
+    const out = mutator(text);
+    if (out === text) return null;
+    try { return await putFile('index.html', textToB64(out), message, f.sha); }
+    catch (e) {
+      const conflict = e.status === 409 || (e.status === 422 && /sha|match/i.test(JSON.stringify(e.raw || {})));
+      if (conflict) { last = e; await sleep(500 * (i + 1)); continue; }
+      throw e;
+    }
+  }
+  throw last || new Error('ذخیره به‌خاطر تعارض انجام نشد؛ دوباره امتحان کن.');
+}
+
+/* ---------- ابزار ساختار HTML (جراحی دقیق روی رشته، بدون بازنویسی کل فایل) ---------- */
+function findEl(html, openRe, tag) {
+  const m = openRe.exec(html); if (!m) return null;
+  const innerStart = m.index + m[0].length;
+  const re = new RegExp('<!--[\\s\\S]*?-->|<(/?)' + tag + '\\b[^>]*>', 'gi'); re.lastIndex = innerStart;
+  let depth = 1, r;
+  while ((r = re.exec(html))) {
+    if (r[0].startsWith('<!--')) continue;
+    if (r[1]) { depth--; if (!depth) return { openStart: m.index, innerStart, innerEnd: r.index, end: r.index + r[0].length }; }
+    else depth++;
+  }
+  return null;
+}
+const RE_FEED = /<div\b[^>]*\bclass="[^"]*\bmorse-container\b[^"]*"[^>]*>/i;
+const RE_QUOTE = /<div\b[^>]*\bclass="[^"]*\bquote-box\b[^"]*"[^>]*>/i;
+const RE_FOOT = /<footer\b[^>]*\bid="siteFooter"[^>]*>/i;
+function getFeed(html) {
+  const r = findEl(html, RE_FEED, 'div');
+  if (!r) throw new Error('ساختار index.html قابل تشخیص نیست (بخش morse-container پیدا نشد). از تب «پیشرفته» استفاده کن.');
+  return r;
+}
+function parseFrag(inner) { const t = document.createElement('template'); t.innerHTML = inner; return t.content; }
+const rowsOf = (frag) => [...frag.children].filter((e) => e.classList.contains('music-row'));
+const kindOf = (el) => (el.querySelector('.circular-morse') ? 'music' : 'text');
+function elText(el) {
+  if (!el) return '';
+  const c = el.cloneNode(true);
+  c.querySelectorAll('br').forEach((b) => b.replaceWith('\n'));
+  return c.textContent.replace(/[ \t]*\n[ \t]*/g, '\n').trim();
+}
+function legacySrc(html, buttonId) {
+  if (!buttonId) return '';
+  const id = buttonId.replace(/Button$/, 'Audio');
+  const m = new RegExp('<audio\\b[^>]*\\bid="' + escRe(id) + '"[^>]*>', 'i').exec(html);
+  if (!m) return '';
+  const s = /\bsrc="([^"]*)"/i.exec(m[0]);
+  return s ? s[1] : '';
+}
+function removeLegacyAudio(html, buttonId) {
+  if (!buttonId) return html;
+  const id = buttonId.replace(/Button$/, 'Audio');
+  return html.replace(new RegExp('[ \\t]*<audio\\b[^>]*\\bid="' + escRe(id) + '"[^>]*>\\s*</audio>[ \\t]*\\r?\\n?', 'i'), '');
+}
+function rowSrc(el, html) {
+  const b = el.querySelector('.circular-morse'); if (!b) return '';
+  return b.getAttribute('data-src') || legacySrc(html, b.id) || '';
+}
+function hash(s) { let x = 5381; for (let i = 0; i < s.length; i++) x = ((x << 5) + x + s.charCodeAt(i)) >>> 0; return x.toString(36); }
+function normalizeFrag(frag, html) {
+  [...frag.childNodes].forEach((n) => { if (n.nodeType === 8 || (n.nodeType === 3 && !n.textContent.trim())) n.remove(); });
+  const used = new Set();
+  rowsOf(frag).forEach((el) => {
+    let id = el.getAttribute('data-id');
+    if (!id) id = 'r' + hash(kindOf(el) + '|' + elText(el.querySelector('.fa-nastaliq')) + '|' + rowSrc(el, html));
+    const base = id; let n = 2; while (used.has(id)) id = base + '-' + (n++);
+    used.add(id); el.setAttribute('data-id', id);
+  });
+}
+const serializeFeed = (frag) => '\n\n      ' + [...frag.children].map((e) => e.outerHTML).join('\n\n      ') + '\n\n    ';
+function withFeed(html, fn) {
+  const r = getFeed(html);
+  const frag = parseFrag(html.slice(r.innerStart, r.innerEnd));
+  normalizeFrag(frag, html);
+  const res = fn(frag, html);
+  const out = (res && res.html != null) ? res.html : html;
+  const rr = getFeed(out);
+  return out.slice(0, rr.innerStart) + serializeFeed(frag) + out.slice(rr.innerEnd);
+}
+function findRow(frag, id) {
+  const el = rowsOf(frag).find((e) => e.getAttribute('data-id') === id);
+  if (!el) throw new Error('این مورد دیگر در صفحه پیدا نشد (شاید جای دیگری تغییر کرده). «تازه‌سازی» را بزن.');
+  return el;
+}
+function referenced(html, path) {
+  if (!path) return false;
+  return new RegExp('["\'(]' + escRe(path) + '(?:\\?[^"\')]*)?["\')]').test(html);
+}
+
+/* ---------- مدل خواندنی ---------- */
+function readModel(html) {
+  const r = getFeed(html);
+  const frag = parseFrag(html.slice(r.innerStart, r.innerEnd));
+  normalizeFrag(frag, html);
+  return rowsOf(frag).map((el) => {
+    const kind = kindOf(el);
+    const cap = el.querySelector('.side-caption');
+    return {
+      id: el.getAttribute('data-id'), kind,
+      fa: elText(cap && cap.querySelector('.fa-nastaliq')),
+      en: elText(cap && cap.querySelector('.en-text')),
+      circle: el.classList.contains('row-text-left') ? 'left' : 'right',
+      file: kind === 'music' ? rowSrc(el, html) : '',
+      line: !!el.querySelector('.long-line')
+    };
+  });
+}
+function readSettings(html) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const q = doc.querySelector('.quote-box');
+  const tp = doc.querySelector('.morse-container textPath');
+  let phrases = [];
+  if (tp) {
+    const seen = new Set();
+    tp.textContent.split('•').map((s) => s.replace(/[\s\u00a0]+/g, ' ').trim()).filter(Boolean).forEach((s) => { if (!seen.has(s)) { seen.add(s); phrases.push(s); } });
+  }
+  const md = doc.querySelector('meta[name="description"]');
+  const av = /src="avatar\.jpg(?:\?v=\d+)?"/.test(html);
+  return {
+    qFa: elText(q && q.querySelector('.fa-nastaliq')), qEn: elText(q && q.querySelector('.en-text')),
+    foot: (doc.getElementById('siteFooter') || {}).textContent || '',
+    circ: phrases.join('\n'), title: (doc.querySelector('title') || {}).textContent || '',
+    desc: md ? md.getAttribute('content') || '' : '', avatar: av
+  };
+}
+
+/* ---------- قالب ردیف‌ها (دقیقاً مطابق الگوی فعلی سایت) ---------- */
+function musicRowHtml(f) {
+  const cls = f.circle === 'left' ? 'row-text-left' : 'row-text-right';
+  const pid = 'circlePath-' + f.id;
+  return '<div class="music-row ' + cls + ' fade-section" data-id="' + f.id + '">\n' +
+    '        <div class="side-caption">\n' +
+    '          <div class="fa-nastaliq">' + toHtml(f.fa) + '</div>' + (f.en ? '\n          <div class="en-text">' + toHtml(f.en) + '</div>' : '') + '\n' +
+    '        </div>\n' +
+    '        <div class="circular-morse" data-src="' + esc(f.file) + '" role="button" tabindex="0" aria-label="پخش موسیقی">\n' +
+    '          <svg class="morse-text-svg" viewBox="0 0 240 240">\n' +
+    '            <defs>\n              <path id="' + pid + '" d="M 120, 120 m -105, 0 a 105,105 0 1,1 210,0 a 105,105 0 1,1 -210,0" fill="none" />\n            </defs>\n' +
+    '            <text>\n              <textPath href="#' + pid + '" startOffset="0%" text-anchor="start">\n                ' + f.circleInner + '\n              </textPath>\n            </text>\n' +
+    '          </svg>\n' +
+    '          <div class="morse-circle">\n            <div class="morse-symbol">ꕥ</div>\n          </div>\n' +
+    '        </div>\n' +
+    '      </div>';
+}
+function textRowHtml(f) {
+  return '<div class="music-row row-text-right fade-section" data-id="' + f.id + '" style="flex-direction: column; justify-content: center;">\n' +
+    '        <div class="side-caption" style="max-width: 420px;">\n' +
+    '          <div class="fa-nastaliq">' + toHtml(f.fa) + '</div>' + (f.en ? '\n          <div class="en-text">' + toHtml(f.en) + '</div>' : '') + '\n' +
+    '        </div>' + (f.line ? '\n        <div class="long-line" style="margin-top: 26px; margin-bottom: 0;"></div>' : '') + '\n' +
+    '      </div>';
+}
+const elFrom = (html) => { const t = document.createElement('template'); t.innerHTML = html; return t.content.firstElementChild; };
+
+/* ---------- جهش‌ها (هر کدام یک رشتهٔ HTML تازه برمی‌گردانند) ---------- */
+function mAddMusic(html, f) {
+  return withFeed(html, (frag) => {
+    const first = frag.querySelector('textPath');
+    const el = elFrom(musicRowHtml(Object.assign({}, f, { id: newId('m'), circleInner: first ? first.innerHTML.trim() : DEFAULT_CIRCLE })));
+    placeRow(frag, el, f.where, 'music');
+  });
+}
+function mAddText(html, f) {
+  return withFeed(html, (frag) => { placeRow(frag, elFrom(textRowHtml(Object.assign({}, f, { id: newId('t') }))), f.where || 'end', 'text'); });
+}
+function placeRow(frag, el, where, kind) {
+  const rows = rowsOf(frag);
+  if (where === 'start') { frag.prepend(el); return; }
+  if (where === 'afterMusic') { const m = rows.filter((r) => kindOf(r) === 'music'); if (m.length) { m[m.length - 1].after(el); return; } }
+  frag.append(el);
+}
+function setCaption(el, fa, en) {
+  let cap = el.querySelector('.side-caption');
+  if (!cap) { cap = document.createElement('div'); cap.className = 'side-caption'; el.prepend(cap); }
+  let faEl = cap.querySelector('.fa-nastaliq');
+  if (!faEl) { faEl = document.createElement('div'); faEl.className = 'fa-nastaliq'; cap.prepend(faEl); }
+  faEl.innerHTML = toHtml(fa);
+  let enEl = cap.querySelector('.en-text');
+  if (en) { if (!enEl) { enEl = document.createElement('div'); enEl.className = 'en-text'; cap.append(enEl); } enEl.innerHTML = toHtml(en); }
+  else if (enEl) enEl.remove();
+}
+function mUpdate(html, id, p, info) {
+  return withFeed(html, (frag) => {
+    const el = findRow(frag, id);
+    const kind = kindOf(el);
+    setCaption(el, p.fa, p.en);
+    let out = html;
+    if (kind === 'music') {
+      el.classList.remove('row-text-left', 'row-text-right');
+      el.classList.add(p.circle === 'left' ? 'row-text-left' : 'row-text-right');
+      const b = el.querySelector('.circular-morse');
+      info.oldFile = rowSrc(el, html);
+      if (p.file) { b.setAttribute('data-src', p.file); out = removeLegacyAudio(html, b.id); }
+    } else {
+      const line = el.querySelector('.long-line');
+      if (p.line && !line) el.append(elFrom('<div class="long-line" style="margin-top: 26px; margin-bottom: 0;"></div>'));
+      if (!p.line && line) line.remove();
+    }
+    return { html: out };
+  });
+}
+function mDelete(html, id, info) {
+  let res = withFeed(html, (frag) => {
+    const el = findRow(frag, id);
+    const b = el.querySelector('.circular-morse');
+    info.file = rowSrc(el, html);
+    el.remove();
+    return { html: b ? removeLegacyAudio(html, b.id) : html };
+  });
+  info.stillUsed = referenced(res, info.file);
+  return res;
+}
+function mMove(html, id, delta) {
+  return withFeed(html, (frag) => {
+    const el = findRow(frag, id);
+    if (delta < 0) { const p = el.previousElementSibling; if (p) p.before(el); }
+    else { const n = el.nextElementSibling; if (n) n.after(el); }
+  });
+}
+function mSettings(html, v) {
+  let out = html;
+  const q = findEl(out, RE_QUOTE, 'div');
+  if (q) out = out.slice(0, q.innerStart) + '\n      <div class="fa-nastaliq">' + toHtml(v.qFa) + '</div>' + (v.qEn ? '\n      <div class="en-text">' + toHtml(v.qEn) + '</div>' : '') + '\n    ' + out.slice(q.innerEnd);
+  const f = findEl(out, RE_FOOT, 'footer');
+  if (f) out = out.slice(0, f.innerStart) + esc(v.foot.trim()) + out.slice(f.innerEnd);
+  const phrases = v.circ.split(/\r?\n/).map((s) => s.trim().toUpperCase()).filter(Boolean);
+  if (phrases.length) {
+    const inner = '&nbsp;•&nbsp; ' + Array(3).fill(phrases.map((p) => esc(p)).join(' &nbsp;•&nbsp; ')).join(' &nbsp;•&nbsp; ') + ' &nbsp;•&nbsp;';
+    out = withFeed(out, (frag) => { frag.querySelectorAll('textPath').forEach((tp) => { tp.innerHTML = inner; }); });
+  }
+  out = out.replace(/(<title>)[\s\S]*?(<\/title>)/i, (m, a, b) => a + esc(v.title.trim() || 'subkazani.ir') + b);
+  const dsc = esc(v.desc.trim());
+  out = out.replace(/(<meta\s+name="description"\s+content=")[^"]*(")/i, (m, a, b) => a + dsc + b);
+  out = out.replace(/(<meta\s+property="og:description"\s+content=")[^"]*(")/i, (m, a, b) => a + dsc + b);
+  return out;
+}
+function mBumpAvatar(html) { return html.replace(/src="avatar\.jpg(?:\?v=\d+)?"/, 'src="avatar.jpg?v=' + Date.now() + '"'); }
+
+/* ---------- عملیات سطح بالا ---------- */
+function audioExt(name) { const m = /\.(mp3|m4a|ogg|wav)$/i.exec(name); return m ? m[1].toLowerCase() : null; }
+function slug(name) {
+  const base = name.replace(/\.[^.]+$/, '');
+  return base.normalize('NFKD').replace(/[^\x00-\x7F]/g, '').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase().slice(0, 40) || 'track';
+}
+async function uploadAudio(file) {
+  const ext = audioExt(file.name);
+  if (!ext) throw new Error('فقط فایل‌های MP3 / M4A / OGG / WAV مجاز است.');
+  if (file.size > CFG.maxAudio) throw new Error('حجم فایل بیش از ' + fmtSize(CFG.maxAudio) + ' است.');
+  const path = 'music/' + slug(file.name) + '-' + Date.now().toString(36) + '.' + ext;
+  showBusy('در حال آپلود فایل صوتی (' + fmtSize(file.size) + ')… صبور باش');
+  const r = await putFile(path, await blobToB64(file), 'Add music file ' + baseName(path));
+  return { path, sha: r.content.sha };
+}
+async function deleteRepoFile(path, why) {
+  const sha = await fileSha(path); if (!sha) return;
+  await delFile(path, sha, why + ' ' + baseName(path));
+}
+async function opAddMusic(f) {
+  const up = await uploadAudio(f.file);
+  showBusy('در حال ثبت در صفحه…');
+  try {
+    const r = await mutateIndex((html) => mAddMusic(html, { fa: f.fa, en: f.en, circle: f.circle, file: up.path, where: f.where }), 'Add music: ' + short(f.fa, 30));
+    return r;
+  } catch (e) {
+    try { await delFile(up.path, up.sha, 'Rollback uploaded file'); } catch (x) { /* ignore */ }
+    throw e;
+  }
+}
+async function opUpdate(id, p, delOld) {
+  let up = null;
+  if (p.newFile) up = await uploadAudio(p.newFile);
+  showBusy('در حال ذخیره…');
+  const info = {};
+  let r;
+  try { r = await mutateIndex((html) => mUpdate(html, id, Object.assign({}, p, { file: up ? up.path : null }), info), 'Update ' + short(p.fa, 30)); }
+  catch (e) { if (up) { try { await delFile(up.path, up.sha, 'Rollback uploaded file'); } catch (x) { /* ignore */ } } throw e; }
+  if (up && delOld && info.oldFile) {
+    try {
+      const cur = b64ToText((await getFile('index.html')).b64);
+      if (!referenced(cur, info.oldFile)) await deleteRepoFile(info.oldFile, 'Remove replaced music file');
+    } catch (e) { toast('موسیقی عوض شد، ولی حذف فایل قبلی انجام نشد.', 'err'); }
+  }
+  return r;
+}
+async function opDelete(id, delFileToo) {
+  const info = {};
+  const r = await mutateIndex((html) => mDelete(html, id, info), 'Delete row ' + id);
+  if (delFileToo && info.file && !info.stillUsed && audioExt(info.file) && info.file !== 'avatar.jpg') {
+    try { await deleteRepoFile(info.file, 'Delete music file'); } catch (e) { toast('ردیف حذف شد، ولی حذف فایل صوتی از مخزن انجام نشد.', 'err'); }
+  }
+  return r;
+}
+async function resizeImage(file, maxSide, q) {
+  let bmp;
+  try { bmp = await createImageBitmap(file); }
+  catch (e) {
+    bmp = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('این فایل تصویر معتبری نیست.')); i.src = URL.createObjectURL(file); });
+  }
+  const w = bmp.width || bmp.naturalWidth, hh = bmp.height || bmp.naturalHeight;
+  const k = Math.min(1, maxSide / Math.max(w, hh));
+  const c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(hh * k);
+  const ctx = c.getContext('2d'); ctx.fillStyle = '#000'; ctx.fillRect(0, 0, c.width, c.height); ctx.drawImage(bmp, 0, 0, c.width, c.height);
+  return new Promise((res, rej) => c.toBlob((b) => (b ? res(b) : rej(new Error('تبدیل تصویر ناموفق بود.'))), 'image/jpeg', q));
+}
+async function putImage(path, blob, msg) {
+  const sha = await fileSha(path);
+  return putFile(path, await blobToB64(blob), msg, sha || undefined);
+}
+
+/* ---------- اجرای عملیات با قفل و پیام ---------- */
+async function run(label, fn, okMsg) {
+  if (S.busy) return false;
+  S.busy = 1; showBusy(label);
+  try {
+    const r = await fn();
+    toast(okMsg || 'ذخیره شد ✓', 'ok');
+    if (r && r.commit && r.commit.sha) trackPublish(r.commit.sha); else setPub('ذخیره شد', 'ok');
+    await loadAll(true);
+    return true;
+  } catch (e) { console.error(e); toast(e.message || String(e), 'err', 8000); return false; }
+  finally { S.busy = 0; hideBusy(); }
+}
+
+/* ---------- وضعیت انتشار GitHub Pages ---------- */
+function trackPublish(commitSha) {
+  clearTimeout(S.pubTimer);
+  setPub('ذخیره شد — در حال انتشار…', 'wait');
+  let n = 0;
+  const tick = async () => {
+    n++;
+    try {
+      const b = await gh('GET', repoBase() + '/pages/builds/latest');
+      if (b && b.commit === commitSha) {
+        if (b.status === 'built') { setPub('منتشر شد ✓', 'ok'); return; }
+        if (b.status === 'errored') { setPub('خطا در انتشار Pages', 'bad'); return; }
+      }
+    } catch (e) { setPub('ذخیره شد؛ تا ۱–۲ دقیقه دیگر روی سایت دیده می‌شود', 'ok'); return; }
+    if (n < 40) S.pubTimer = setTimeout(tick, 4000); else setPub('ذخیره شد؛ اگر هنوز دیده نمی‌شود چند دقیقه صبر کن', 'ok');
+  };
+  S.pubTimer = setTimeout(tick, 3000);
+}
+
+/* ---------- رندر ---------- */
+function renderRows() {
+  const box = $('#rows'); box.textContent = '';
+  if (!S.rows.length) { box.append(h('div', { class: 'empty' }, 'هنوز محتوایی در صفحه نیست.')); return; }
+  S.rows.forEach((r, i) => {
+    const isM = r.kind === 'music';
+    const chips = h('div', { class: 'chips' });
+    if (isM) { chips.append(h('span', { class: 'chip' }, baseName(r.file) || 'no-file'), h('span', { class: 'chip' }, r.circle === 'left' ? 'دایره: چپ' : 'دایره: راست')); }
+    else { chips.append(h('span', { class: 'chip' }, 'متن'), r.line ? h('span', { class: 'chip' }, 'با خط') : null); }
+    const ctl = h('div', { class: 'ctl' },
+      h('button', { class: 'btn sm', type: 'button', onclick: () => doMove(r.id, -1), disabled: i === 0, 'aria-label': 'بالا' }, '▲'),
+      h('button', { class: 'btn sm', type: 'button', onclick: () => doMove(r.id, 1), disabled: i === S.rows.length - 1, 'aria-label': 'پایین' }, '▼'),
+      h('button', { class: 'btn sm', type: 'button', onclick: () => openEditor(r) }, '✎ ویرایش'),
+      isM ? h('button', { class: 'btn sm', type: 'button', onclick: (ev) => togglePrev(ev.currentTarget, r) }, '▶ پیش‌نمایش') : null,
+      h('button', { class: 'btn sm dng', type: 'button', onclick: () => doDelete(r) }, '🗑 حذف'));
+    box.append(h('div', { class: 'item' },
+      h('div', { class: 'ico' }, isM ? '♫' : '¶'),
+      h('div', {}, h('div', { class: 'fa' }, short(r.fa, 220)), r.en ? h('div', { class: 'en' }, short(r.en, 160)) : null, chips),
+      ctl));
+  });
+}
+function togglePrev(btn, r) {
+  const ctl = btn.parentElement; const ex = ctl.querySelector('audio');
+  if (ex) { ex.pause(); ex.remove(); btn.textContent = '▶ پیش‌نمایش'; return; }
+  const a = h('audio', { controls: true, preload: 'none', src: '../' + r.file });
+  ctl.append(a); btn.textContent = '■ بستن'; a.play().catch(() => {});
+}
+function fillSettings() {
+  const v = readSettings(S.html);
+  $('#qFa').value = v.qFa; $('#qEn').value = v.qEn; $('#foot').value = v.foot; $('#circ').value = v.circ; $('#mTitle').value = v.title; $('#mDesc').value = v.desc;
+  $('#avatarImg').src = '../avatar.jpg?t=' + Date.now();
+}
+async function refreshBg() {
+  const sha = await fileSha('back.jpg').catch(() => null);
+  $('#bgState').textContent = sha ? 'پس‌زمینهٔ سفارشی فعال است.' : 'پس‌زمینهٔ سفارشی ندارد (حالت پیش‌فرض قرمز-مشکی).';
+  $('#bgDel').classList.toggle('hidden', !sha);
+  const img = $('#bgImg'); img.classList.toggle('hidden', !sha); if (sha) img.src = '../back.jpg?t=' + Date.now();
+}
+async function loadAll(quiet) {
+  const f = await getFile('index.html');
+  S.html = b64ToText(f.b64);
+  S.rows = readModel(S.html);
+  renderRows(); fillSettings(); $('#src').value = S.html;
+  if (S.tab === 'history') loadHistory();
+  if (S.tab === 'files') loadFiles();
+  if (S.tab === 'settings') refreshBg();
+}
+
+/* ---------- ویرایشگر ---------- */
+let editing = null;
+function openEditor(r, kind) {
+  editing = r ? { id: r.id, kind: r.kind } : { id: null, kind };
+  const isM = editing.kind === 'music', isNew = !r;
+  $('#dTitle').textContent = isNew ? (isM ? 'موسیقی جدید' : 'متن جدید') : (isM ? 'ویرایش موسیقی' : 'ویرایش متن');
+  $('#dFa').value = r ? r.fa : ''; $('#dEn').value = r ? r.en : '';
+  $('#dEnOpt').textContent = isM ? '' : '(اختیاری)';
+  $('#dMusic').classList.toggle('hidden', !isM); $('#dText').classList.toggle('hidden', isM);
+  $('#dErr').textContent = '';
+  if (isM) {
+    let circle = r ? r.circle : 'left';
+    if (isNew) { const ms = S.rows.filter((x) => x.kind === 'music'); if (ms.length) circle = ms[ms.length - 1].circle === 'left' ? 'right' : 'left'; }
+    document.querySelectorAll('input[name=dCircle]').forEach((x) => { x.checked = x.value === circle; });
+    $('#dFile').value = ''; $('#dFile').required = isNew;
+    $('#dFileLbl').textContent = isNew ? 'فایل صوتی (MP3)' : 'جایگزینی فایل صوتی (اختیاری)';
+    $('#dWhereBox').classList.toggle('hidden', !isNew);
+    $('#dDelOldBox').classList.toggle('hidden', isNew);
+    const prev = $('#dPrev'); prev.pause(); prev.classList.toggle('hidden', isNew || !r.file);
+    if (!isNew && r.file) prev.src = '../' + r.file;
+    $('#dWhere').value = 'afterMusic';
+  } else { $('#dLine').checked = r ? r.line : true; $('#dWhere').value = 'end'; }
+  $('#dlg').showModal();
+}
+$('#dFile').addEventListener('change', () => {
+  const f = $('#dFile').files[0]; if (!f) return;
+  const p = $('#dPrev'); p.src = URL.createObjectURL(f); p.classList.remove('hidden');
+});
+$('#dCancel').addEventListener('click', () => { $('#dPrev').pause(); $('#dlg').close(); });
+$('#dlg').addEventListener('close', () => $('#dPrev').pause());
+$('#dlgForm').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const fa = $('#dFa').value.trim(), en = $('#dEn').value.trim();
+  const err = (m) => { $('#dErr').textContent = m; };
+  if (!fa) return err('متن فارسی را وارد کن.');
+  const isM = editing.kind === 'music', isNew = !editing.id;
+  const file = $('#dFile').files[0] || null;
+  if (isM && isNew && !file) return err('فایل صوتی را انتخاب کن.');
+  if (file && !audioExt(file.name)) return err('فقط فایل MP3 / M4A / OGG / WAV مجاز است.');
+  if (file && file.size > CFG.maxAudio) return err('حجم فایل بیش از ' + fmtSize(CFG.maxAudio) + ' است.');
+  const circle = (document.querySelector('input[name=dCircle]:checked') || {}).value || 'left';
+  $('#dPrev').pause(); $('#dlg').close();
+  if (isNew && isM) await run('در حال ذخیره…', () => opAddMusic({ fa, en, circle, file, where: $('#dWhere').value }), 'موسیقی اضافه شد ✓');
+  else if (isNew) await run('در حال ذخیره…', () => mutateIndex((html) => mAddText(html, { fa, en, line: $('#dLine').checked, where: $('#dWhere').value }), 'Add text: ' + short(fa, 30)), 'متن اضافه شد ✓');
+  else await run('در حال ذخیره…', () => opUpdate(editing.id, { fa, en, circle, line: $('#dLine').checked, newFile: file }, $('#dDelOld').checked), 'تغییرات ذخیره شد ✓');
+});
+
+/* ---------- کنش‌ها ---------- */
+const doMove = (id, d) => run('در حال جابه‌جایی…', () => mutateIndex((html) => mMove(html, id, d), 'Move row'), 'ترتیب تغییر کرد ✓');
+async function doDelete(r) {
+  const isM = r.kind === 'music';
+  let alsoFile = false;
+  if (!confirm((isM ? 'این موسیقی' : 'این متن') + ' کامل از صفحه حذف شود؟\n\n' + short(r.fa, 80))) return;
+  if (isM && r.file) alsoFile = confirm('فایل صوتی «' + baseName(r.file) + '» هم از مخزن GitHub حذف شود؟\n\nOK = حذف فایل\nCancel = فایل بماند');
+  await run('در حال حذف…', () => opDelete(r.id, alsoFile), 'حذف شد ✓');
+}
+$('#addMusic').addEventListener('click', () => openEditor(null, 'music'));
+$('#addText').addEventListener('click', () => openEditor(null, 'text'));
+$('#reload').addEventListener('click', async () => { if (S.busy) return; showBusy('در حال بارگذاری…'); try { await loadAll(); toast('به‌روز شد', 'ok', 1500); } catch (e) { toast(e.message, 'err'); } finally { hideBusy(); } });
+
+$('#saveSettings').addEventListener('click', () => {
+  const v = { qFa: $('#qFa').value, qEn: $('#qEn').value, foot: $('#foot').value, circ: $('#circ').value, title: $('#mTitle').value, desc: $('#mDesc').value };
+  if (!v.qFa.trim()) return toast('متن فارسی شعار نباید خالی باشد.', 'err');
+  run('در حال ذخیره…', async () => { const r = await mutateIndex((html) => mSettings(html, v), 'Update site settings'); return r || { commit: null }; }, 'تنظیمات ذخیره شد ✓');
+});
+$('#avatarBtn').addEventListener('click', () => $('#avatarFile').click());
+$('#avatarFile').addEventListener('change', () => {
+  const f = $('#avatarFile').files[0]; $('#avatarFile').value = ''; if (!f) return;
+  run('در حال آماده‌سازی و آپلود عکس…', async () => {
+    const blob = await resizeImage(f, 800, 0.88);
+    await putImage('avatar.jpg', blob, 'Update avatar');
+    return mutateIndex(mBumpAvatar, 'Refresh avatar cache');
+  }, 'عکس پروفایل عوض شد ✓');
+});
+$('#bgBtn').addEventListener('click', () => $('#bgFile').click());
+$('#bgFile').addEventListener('change', () => {
+  const f = $('#bgFile').files[0]; $('#bgFile').value = ''; if (!f) return;
+  run('در حال آماده‌سازی و آپلود پس‌زمینه…', async () => { const blob = await resizeImage(f, 1920, 0.8); return putImage('back.jpg', blob, 'Update background'); }, 'پس‌زمینه ذخیره شد ✓');
+});
+$('#bgDel').addEventListener('click', () => {
+  if (!confirm('پس‌زمینهٔ سفارشی حذف شود؟')) return;
+  run('در حال حذف…', async () => { const sha = await fileSha('back.jpg'); if (sha) return delFile('back.jpg', sha, 'Remove custom background'); }, 'پس‌زمینه حذف شد ✓');
+});
+
+/* تاریخچه */
+async function loadHistory() {
+  const box = $('#hist'); box.textContent = 'در حال بارگذاری…';
+  try {
+    const list = await gh('GET', repoBase() + '/commits?path=index.html&sha=' + encodeURIComponent(S.branch) + '&per_page=25');
+    box.textContent = '';
+    list.forEach((c, i) => {
+      const d = new Date(c.commit.author.date);
+      box.append(h('div', { class: 'item', style: 'grid-template-columns:1fr' },
+        h('div', { class: 'hist' },
+          h('div', { class: 'm' }, h('div', {}, short(c.commit.message.split('\n')[0], 90)), h('div', { class: 'd' }, d.toLocaleString('fa-IR') + ' · ' + c.sha.slice(0, 7))),
+          i === 0 ? h('span', { class: 'chip' }, 'نسخهٔ فعلی') : h('button', { class: 'btn sm', type: 'button', onclick: () => doRestore(c.sha) }, '↺ بازگردانی'))));
+    });
+    if (!list.length) box.append(h('div', { class: 'empty' }, 'تاریخچه‌ای پیدا نشد.'));
+  } catch (e) { box.textContent = e.message; }
+}
+async function doRestore(sha) {
+  if (!confirm('index.html به نسخهٔ ' + sha.slice(0, 7) + ' برگردانده شود؟\nمحتوای فعلی صفحه جایگزین می‌شود (ولی در تاریخچه می‌ماند).')) return;
+  await run('در حال بازگردانی…', async () => { const old = b64ToText((await getFile('index.html', sha)).b64); return mutateIndex(() => old, 'Restore index.html from ' + sha.slice(0, 7)); }, 'نسخه برگردانده شد ✓');
+}
+
+/* فایل‌ها */
+const MEDIA = /\.(mp3|m4a|ogg|wav|jpe?g|png|webp|gif)$/i;
+async function loadFiles() {
+  const box = $('#files'); box.textContent = 'در حال بارگذاری…';
+  try {
+    const [root, music] = await Promise.all([listDir(''), listDir('music')]);
+    const all = [...root, ...music].filter((x) => x.type === 'file' && MEDIA.test(x.name));
+    box.textContent = '';
+    if (!all.length) { box.append(h('div', { class: 'empty' }, 'فایلی پیدا نشد.')); return; }
+    all.forEach((x) => {
+      const used = referenced(S.html, x.path) || x.path === 'avatar.jpg' || x.path === 'back.jpg';
+      const isAudio = /\.(mp3|m4a|ogg|wav)$/i.test(x.name);
+      const ctl = h('div', { class: 'ctl' },
+        isAudio ? h('button', { class: 'btn sm', type: 'button', onclick: (ev) => togglePrev(ev.currentTarget, { file: x.path }) }, '▶ پخش') : h('a', { class: 'btn sm', href: '../' + x.path, target: '_blank', rel: 'noopener' }, 'مشاهده'),
+        x.path === 'avatar.jpg' ? null : h('button', { class: 'btn sm dng', type: 'button', onclick: () => doDeleteFile(x) }, '🗑 حذف'));
+      box.append(h('div', { class: 'item' }, h('div', { class: 'ico' }, isAudio ? '♫' : '▣'),
+        h('div', {}, h('div', { class: 'en', style: 'color:var(--txt)' }, x.path), h('div', { class: 'chips' }, h('span', { class: 'chip' }, fmtSize(x.size)), h('span', { class: 'chip', style: used ? '' : 'color:#ffd27a' }, used ? 'در استفاده' : 'بدون استفاده'))), ctl));
+    });
+  } catch (e) { box.textContent = e.message; }
+}
+async function doDeleteFile(x) {
+  const used = referenced(S.html, x.path);
+  if (!confirm((used ? '⚠ این فایل هنوز در صفحه استفاده می‌شود و پخش‌کننده‌اش خراب می‌شود!\n\n' : '') + 'فایل «' + x.path + '» از مخزن حذف شود؟')) return;
+  await run('در حال حذف…', () => delFile(x.path, x.sha, 'Delete file ' + baseName(x.path)), 'فایل حذف شد ✓');
+}
+
+/* پیشرفته */
+$('#srcReload').addEventListener('click', async () => { if (S.busy) return; try { showBusy('در حال بارگذاری…'); await loadAll(); toast('کد دوباره بارگذاری شد', 'ok', 1500); } catch (e) { toast(e.message, 'err'); } finally { hideBusy(); } });
+$('#srcSave').addEventListener('click', () => {
+  const text = $('#src').value;
+  const ok = /<html[\s>]/i.test(text) && /<\/html>\s*$/i.test(text) && /morse-container/.test(text);
+  if (!ok && !confirm('⚠ ساختار فایل ناقص به نظر می‌رسد (تگ html یا بخش morse-container پیدا نشد). مطمئنی ذخیره شود؟')) return;
+  if (!confirm('کد کل index.html با این متن جایگزین شود؟')) return;
+  run('در حال ذخیره کد…', () => mutateIndex(() => text, 'Edit index.html from admin panel'), 'کد ذخیره شد ✓');
+});
+
+/* تب‌ها */
+$('#tabs').addEventListener('click', (e) => {
+  const b = e.target.closest('.tab'); if (!b) return;
+  S.tab = b.dataset.tab;
+  document.querySelectorAll('.tab').forEach((x) => x.classList.toggle('on', x === b));
+  ['rows', 'settings', 'history', 'files', 'adv'].forEach((t) => $('#tab-' + t).classList.toggle('hidden', t !== S.tab));
+  if (S.tab === 'history') loadHistory();
+  if (S.tab === 'files') loadFiles();
+  if (S.tab === 'settings') refreshBg();
+});
+
+/* ---------- ورود با توکن ---------- */
+async function tryLogin(raw, remember, silent) {
+  const token = String(raw || '').replace(/^Bearer\s+/i, '').trim();
+  const lerr = (m) => { if (!silent) $('#loginErr').textContent = m; };
+  if (!token) return lerr('توکن را وارد کن.');
+  if (/\s/.test(token)) return lerr('توکن نباید فاصله داشته باشد.');
+  S.token = token; showBusy('در حال بررسی توکن…');
+  try {
+    const repo = await gh('GET', repoBase());
+    if (repo.permissions && repo.permissions.push === false) {
+      throw new Error('این توکن اجازهٔ نوشتن روی مخزن ندارد.\nدر GitHub برای توکن «Contents: Read and write» را فعال کن.');
+    }
+    S.branch = repo.default_branch || 'main';
+    try { const u = await gh('GET', '/user'); S.login = u.login || ''; } catch (e) { S.login = ''; }
+    sessionStorage.removeItem('sk_token'); localStorage.removeItem('sk_token');
+    (remember ? localStorage : sessionStorage).setItem('sk_token', token);
+    $('#who').textContent = (S.login ? S.login + ' · ' : '') + CFG.owner + '/' + CFG.repo + ' · ' + S.branch;
+    await loadAll();
+    $('#login').classList.add('hidden'); $('#app').classList.remove('hidden');
+    $('#tok').value = ''; $('#loginErr').textContent = '';
+  } catch (e) {
+    console.error(e); S.token = null;
+    if (silent) { sessionStorage.removeItem('sk_token'); localStorage.removeItem('sk_token'); }
+    $('#login').classList.remove('hidden'); $('#app').classList.add('hidden');
+    lerr(e.message || String(e));
+  } finally { hideBusy(); }
+}
+$('#loginForm').addEventListener('submit', (e) => { e.preventDefault(); $('#loginErr').textContent = ''; tryLogin($('#tok').value, $('#remember').checked, false); });
+$('#logout').addEventListener('click', () => {
+  sessionStorage.removeItem('sk_token'); localStorage.removeItem('sk_token');
+  S.token = null; S.html = ''; S.rows = []; clearTimeout(S.pubTimer);
+  $('#app').classList.add('hidden'); $('#login').classList.remove('hidden'); $('#rows').textContent = ''; $('#src').value = '';
+});
+(function boot() {
+  const saved = sessionStorage.getItem('sk_token') || localStorage.getItem('sk_token');
+  if (saved) { $('#remember').checked = !!localStorage.getItem('sk_token'); tryLogin(saved, !!localStorage.getItem('sk_token'), true).then(() => { if (!S.token) $('#login').classList.remove('hidden'); }); }
+  else $('#login').classList.remove('hidden');
+})();
+</script>
+</body>
+</html>

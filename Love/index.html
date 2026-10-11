@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#060208">
+<title>Love Heart</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E❤️%3C/text%3E%3C/svg%3E">
+<style>
+html,body{margin:0;height:100%;background:#060208;overflow:hidden}
+canvas{display:block;width:100%;height:100%;cursor:pointer}
+a{position:fixed;left:16px;bottom:calc(14px + env(safe-area-inset-bottom,0px));font:13px Arial,sans-serif;color:rgba(255,200,205,.4);text-decoration:none}
+a:hover,a:focus-visible{color:rgba(255,200,205,.9);outline:none}
+</style>
+</head>
+<body>
+<canvas id="c" role="img" aria-label="A heart made of the words I love you in 20 languages"></canvas>
+<a href="https://subkazani.ir">subkazani.ir</a>
+<script>
+// Web port of love.py: same heart curve, row layout, colours, spawn order, float-in and shimmer.
+const PH=["I love you","Seni seviyorum","Te amo","Je t'aime","Ich liebe dich","Ti amo","Eu te amo","Я тебя люблю","사랑해","愛してる","我爱你","मैं तुमसे प्यार करता हूँ","Σ' αγαπώ","Ik hou van jou","Jag älskar dig","Kocham cię","ฉันรักเธอ","Anh yêu em","Aku cinta kamu","Я тебе кохаю"];
+const SIZES=[9,10,11,12],BG='#060208',FF='Arial,"Noto Sans","Segoe UI",sans-serif';
+const DURATION=10000,ANIM=42*16;               // 10 s spawn, 42 frames per word
+const BGC=[6/255,2/255,8/255],WINE=[.58,0,.09],CRIM=[.90,.05,.14],BLOOD=[.98,.10,.16],FLASH=[1,.78,.78];
+const cv=document.getElementById('c'),cx=cv.getContext('2d');
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let W,H,tf,LIFT,items=[],t0=0,lastSh=0,endAt=0;
+
+const mix=(a,b,k)=>a.map((p,i)=>p+(b[i]-p)*k),dim=(c,k)=>c.map(v=>v*k);
+const css=c=>`rgb(${c.map(v=>Math.round(Math.max(0,Math.min(1,v))*255)).join()})`;
+const clamp=v=>Math.max(0,Math.min(1,v));
+const seed=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const px=s=>s*1.3333*tf;
+const fnt=s=>`bold ${px(s)}px ${FF}`;
+
+function build(){
+  const dpr=Math.min(devicePixelRatio||1,2);
+  W=innerWidth;H=innerHeight;
+  cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0);
+  const f=Math.min(1.6,W*.94/672,H*.92/609);   // heart geometry scale (original: 800x800 window, SC=21)
+  tf=Math.max(f,.85);                           // text/spacing scale, kept readable on phones
+  LIFT=34*tf;
+  const SC=21*f,OY=20*f,rnd=seed(11),uni=(a,b)=>a+(b-a)*rnd(),pick=a=>a[Math.floor(rnd()*a.length)];
+  const POLY=[];
+  for(let i=0;i<720;i++){
+    const a=2*Math.PI*i/720;
+    POLY.push([16*Math.pow(Math.sin(a),3)*SC,
+      (13*Math.cos(a)-5*Math.cos(2*a)-2*Math.cos(3*a)-Math.cos(4*a))*SC+OY]);
+  }
+  const ys=POLY.map(p=>p[1]),YMAX=Math.max(...ys),YMIN=Math.min(...ys),CY=(YMAX+YMIN)/2;
+  const spans=y=>{
+    const xs=[];
+    for(let i=0;i<POLY.length;i++){
+      const [x1,y1]=POLY[i],[x2,y2]=POLY[(i+1)%POLY.length];
+      if((y1<=y&&y<y2)||(y2<=y&&y<y1))xs.push(x1+(y-y1)*(x2-x1)/(y2-y1));
+    }
+    xs.sort((p,q)=>p-q);
+    const out=[];for(let i=0;i+1<xs.length;i+=2)out.push([xs[i],xs[i+1]]);
+    return out;
+  };
+  const inter=(A,B)=>{
+    const out=[];
+    for(const a of A)for(const b of B){
+      const lo=Math.max(a[0],b[0]),hi=Math.min(a[1],b[1]);
+      if(hi-lo>14*tf)out.push([lo,hi]);
+    }
+    return out;
+  };
+  let buf=[];
+  const next=()=>{
+    if(!buf.length){buf=PH.slice();for(let i=buf.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[buf[i],buf[j]]=[buf[j],buf[i]];}}
+    return buf.shift();
+  };
+  const memo={},meas=(t,s)=>{const k=s+t;if(!(k in memo)){cx.font=fnt(s);memo[k]=cx.measureText(t).width;}return memo[k];};
+  const rowH=1.2*px(12)+4*tf,half=rowH/2,GAP=7*tf,placed=[];
+  for(let y=YMAX-half;y>YMIN+half;y-=rowH){
+    for(let [lo,hi] of inter(spans(y+half),spans(y-half))){
+      lo+=4*tf;hi-=4*tf;
+      let cur=lo+uni(0,8*tf);const line=[];
+      for(;;){
+        let fit=null;
+        for(let k=0;k<10;k++){
+          const text=next(),size=pick(SIZES),w=meas(text,size);
+          if(cur+w<=hi){fit=[text,size,w];break;}
+        }
+        if(!fit)break;
+        line.push([cur+fit[2]/2,fit[0],fit[1],fit[2]]);
+        cur+=fit[2]+GAP;
+      }
+      if(!line.length)continue;
+      if(line.length>1){
+        const left=hi-(line[line.length-1][0]+line[line.length-1][3]/2);
+        line.forEach((it,i)=>it[0]+=left*i/(line.length-1));
+      }else line[0][0]=(lo+hi)/2;
+      line.forEach(([x,text,size],i)=>placed.push({x,y,text,size,edge:i===0||i===line.length-1}));
+    }
+  }
+  for(const p of placed){
+    const rad=Math.min(1,Math.hypot(p.x/(16*SC),(p.y-CY)/(14.5*SC)));
+    let b=mix(WINE,CRIM,.25+.75*rad);
+    b=mix(b,BLOOD,uni(0,.35)+(p.edge?.3:0));
+    p.c=b.map(v=>Math.min(1,v));p.rad=rad;
+  }
+  const edges=placed.filter(p=>p.edge),inner=placed.filter(p=>!p.edge);
+  const ang=p=>((Math.atan2(p.x,p.y-CY)%(2*Math.PI))+2*Math.PI)%(2*Math.PI);
+  edges.forEach(p=>p.k=ang(p));inner.forEach(p=>p.k=-p.rad+uni(0,.08));
+  edges.sort((a,b)=>a.k-b.k);inner.sort((a,b)=>a.k-b.k);
+  items=edges.concat(inner);
+  items.forEach((p,i)=>{
+    p.sx=W/2+p.x;p.sy=H/2-(p.y-CY);        // centred on screen, y flipped
+    p.dx=uni(-10,10)*tf;p.t0=i/items.length*DURATION;p.sh=0;
+  });
+  endAt=DURATION+ANIM;
+}
+
+function frame(ts){
+  if(!t0)t0=ts;
+  const el=RM?1e9:ts-t0;
+  cx.fillStyle=BG;cx.fillRect(0,0,W,H);
+  cx.textAlign='center';cx.textBaseline='middle';
+  for(const it of items){
+    const t=el-it.t0;
+    if(t<0)break;                           // items are in spawn order
+    const u=clamp(t/ANIM),e=1-Math.pow(1-u,3),c=it.c,done=u>=1;
+    const x=done?it.sx:it.sx+it.dx*(1-e),y=done?it.sy:it.sy-(1-e)*LIFT;
+    cx.font=fnt(it.size);
+    cx.fillStyle=css(mix(BGC,dim(c,.3),e));
+    cx.fillText(it.text,it.sx+2*tf,it.sy+3*tf);                       // shadow
+    cx.font=fnt(it.size+1);
+    cx.fillStyle=css(mix(BGC,dim(c,.2),e*e));
+    cx.fillText(it.text,x,y);                                         // halo
+    cx.font=fnt(it.size);
+    let col;
+    if(done)col=it.sh>ts?mix(c,FLASH,.6):c;
+    else col=mix(mix(BGC,c,Math.pow(e,1.5)),FLASH,.75*Math.sin(Math.PI*clamp((u-.55)/.45)));
+    cx.fillStyle=css(col);
+    cx.fillText(it.text,x,y);                                         // main
+  }
+  if(!RM&&el>endAt&&ts-lastSh>140&&items.length){                      // shimmer
+    items[Math.floor(Math.random()*items.length)].sh=ts+260;lastSh=ts;
+  }
+  requestAnimationFrame(frame);
+}
+
+addEventListener('resize',()=>{build();t0=-1e9;});
+cv.addEventListener('click',()=>{items.forEach(i=>i.sh=0);t0=0;});
+build();requestAnimationFrame(frame);
+</script>
+</body>
+</html>
